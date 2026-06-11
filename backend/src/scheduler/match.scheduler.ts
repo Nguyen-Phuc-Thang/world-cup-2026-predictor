@@ -24,7 +24,7 @@ export class MatchScheduler {
 
         for (const match of matches) {
             const kickoffTime = new Date(match.utcDate);
-            const delay = kickoffTime.getTime() - Date.now();
+            const delay = kickoffTime.getTime() - Date.now() - 10 * 60 * 1000;
             for (const model of activeModels) {
                 await predictionQueue.add(`match-${match.id} ${match.homeTeam.name} vs ${match.awayTeam.name}`, {
                     matchId: match.id,
@@ -36,5 +36,10 @@ export class MatchScheduler {
         }
 
         await this.log.createLog('Refresh Queue', 'SUCCESS', 'Prediction queue refreshed!');
+    }
+
+    @Cron(CronExpression.EVERY_MINUTE)
+    async cronLog() {
+        console.log("Scheduler is running...");
     }
 }
