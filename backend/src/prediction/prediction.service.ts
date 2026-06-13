@@ -22,6 +22,9 @@ export class PredictionService {
     constructor(private prisma: PrismaService, private football: FootballService, private log: LogService) { }
 
     async predictMatch(matchId: number, modelChoosen: string) {
+        if (await this.predicted(matchId, modelChoosen)) {
+            return;
+        }
         const matchData = await this.football.getMatchById(matchId);
         const homeTeamName = matchData.homeTeam.name;
         const awayTeamName = matchData.awayTeam.name;
@@ -115,5 +118,15 @@ export class PredictionService {
                 matchId
             }
         });
+    }
+
+    async predicted(matchId: number, predictor: string) {
+        const existingPrediction = await this.prisma.client.prediction.findFirst({
+            where: {
+                matchId,
+                predictor
+            }
+        });
+        return !!existingPrediction;
     }
 }

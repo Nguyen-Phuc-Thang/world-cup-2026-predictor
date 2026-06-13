@@ -13,7 +13,7 @@ const activeModels = [
 export class MatchScheduler {
     constructor(@Inject(LogService) private readonly log: LogService,
         @Inject(FootballService) private readonly football: FootballService) {
-
+        console.log("MatchScheduler initialized");
     }
 
     @Cron(CronExpression.EVERY_HOUR) // Run every hour at minute 0
